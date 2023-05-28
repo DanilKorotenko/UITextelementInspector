@@ -16,6 +16,10 @@
     AXUIElementRef _element;
 }
 
+@synthesize role;
+
+@synthesize attributeNames;
+
 + (AOAccessibilityElement *)systemElement
 {
     static AOAccessibilityElement *result = nil;
@@ -33,6 +37,11 @@
     self = [super init];
     if (self)
     {
+        if (NULL == anElement)
+        {
+            return nil;
+        }
+
         _element = CFRetain(anElement);
     }
     return self;
@@ -48,13 +57,58 @@
 
 #pragma mark -
 
+- (AOAccessibilityElement *)focusedElement
+{
+    AXUIElementRef element = [self copyValueOfAttribute:NSAccessibilityFocusedUIElementAttribute];
+    AOAccessibilityElement *result = [[AOAccessibilityElement alloc] initWithAccessibilityElement:element];
+    if (NULL != element)
+    {
+        CFRelease(element);
+    }
+    return result;
+}
+
+#pragma mark -
+
+- (NSString *)role
+{
+    if (nil == role)
+    {
+        CFStringRef roleRef = [self copyValueOfAttribute:NSAccessibilityRoleAttribute];
+        if (NULL != roleRef)
+        {
+            role = CFBridgingRelease(roleRef);
+        }
+    }
+    return role;
+}
+
 - (NSArray *)attributeNames
 {
-    CFArrayRef attrNamesRef = NULL;
-    AXUIElementCopyAttributeNames(_element, &attrNamesRef);
-    NSArray *attrNames = CFBridgingRelease(attrNamesRef);
-    return attrNames;
+    if (nil == attributeNames)
+    {
+        CFArrayRef attrNamesRef = NULL;
+        AXUIElementCopyAttributeNames(_element, &attrNamesRef);
+        attributeNames = CFBridgingRelease(attrNamesRef);
+    }
+    return attributeNames;
 }
+
+#pragma mark -
+
+- (CFTypeRef)copyValueOfAttribute:(NSString *)anAttributeName
+{
+    CFTypeRef resultRef = NULL;
+    if ([self.attributeNames containsObject:anAttributeName])
+    {
+        if (AXUIElementCopyAttributeValue(_element, (CFStringRef)anAttributeName, &resultRef) != kAXErrorSuccess)
+        {
+            resultRef = NULL;
+        }
+    }
+    return resultRef;
+}
+
 
 /*
 
@@ -96,11 +150,6 @@ NSString *const UIElementUtilitiesNoDescription = @"No Description";
     AXUIElementPerformAction( element, (CFStringRef)actionName);
 }
 
-// -------------------------------------------------------------------------------
-//	valueOfExistingAttribute:attribute:element
-//
-//	Given a uiElement and its attribute, return the value of an accessibility object's attribute.
-// -------------------------------------------------------------------------------
 + (id)valueOfAttribute:(NSString *)attribute ofUIElement:(AXUIElementRef)element
 {
     id result = nil;
@@ -210,11 +259,6 @@ NSString *const UIElementUtilitiesNoDescription = @"No Description";
     return (__bridge AXUIElementRef)[UIElementUtilities valueOfAttribute:NSAccessibilityParentAttribute ofUIElement:element];
 }
 
-+ (NSString *)roleOfUIElement:(AXUIElementRef)element
-{
-    return (NSString *)[UIElementUtilities valueOfAttribute:NSAccessibilityRoleAttribute ofUIElement:element];
-}
-
 + (NSString *)titleOfUIElement:(AXUIElementRef)element
 {
     return (NSString *)[UIElementUtilities valueOfAttribute:NSAccessibilityTitleAttribute ofUIElement:element];
@@ -223,64 +267,6 @@ NSString *const UIElementUtilitiesNoDescription = @"No Description";
 + (BOOL)isApplicationUIElement:(AXUIElementRef)element
 {
     return [[UIElementUtilities roleOfUIElement:element] isEqualToString:NSAccessibilityApplicationRole];
-}
-
-#pragma mark -
-
-// Flip coordinates
-
-+ (CGPoint)carbonScreenPointFromCocoaScreenPoint:(NSPoint)cocoaPoint
-{
-    NSScreen *foundScreen = nil;
-    CGPoint thePoint;
-
-    for (NSScreen *screen in [NSScreen screens])
-    {
-        if (NSPointInRect(cocoaPoint, [screen frame]))
-        {
-            foundScreen = screen;
-        }
-    }
-
-    if (foundScreen)
-    {
-        CGFloat screenHeight = [foundScreen frame].size.height;
-
-        thePoint = CGPointMake(cocoaPoint.x, screenHeight - cocoaPoint.y - 1);
-    }
-    else
-    {
-        thePoint = CGPointMake(0.0, 0.0);
-    }
-
-    return thePoint;
-}
-
-// -------------------------------------------------------------------------------
-//	FlippedScreenBounds:bounds
-// -------------------------------------------------------------------------------
-+ (NSRect) flippedScreenBounds:(NSRect) bounds
-{
-    float screenHeight = NSMaxY([[[NSScreen screens] objectAtIndex:0] frame]);
-    bounds.origin.y = screenHeight - NSMaxY(bounds);
-    return bounds;
-}
-
-+ (NSRect)frameOfUIElement:(AXUIElementRef)element
-{
-    NSRect bounds = NSZeroRect;
-
-    id elementPosition = [UIElementUtilities valueOfAttribute:NSAccessibilityPositionAttribute ofUIElement:element];
-    id elementSize = [UIElementUtilities valueOfAttribute:NSAccessibilitySizeAttribute ofUIElement:element];
-
-    if (elementPosition && elementSize)
-    {
-        NSRect topLeftWindowRect;
-        AXValueGetValue((AXValueRef)elementPosition, kAXValueCGPointType, &topLeftWindowRect.origin);
-        AXValueGetValue((AXValueRef)elementSize, kAXValueCGSizeType, &topLeftWindowRect.size);
-        bounds = [self flippedScreenBounds:topLeftWindowRect];
-    }
-    return bounds;
 }
 
 #pragma mark -
@@ -577,9 +563,6 @@ NSString *const UIElementUtilitiesNoDescription = @"No Description";
         NSAccessibilityDescriptionAttribute ofUIElement:element];
     return (result.length == 0) ? UIElementUtilitiesNoDescription: [result description];
 }
-
-@end
-
 
 */
 

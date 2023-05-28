@@ -16,6 +16,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (instancetype)initWithAccessibilityElement:(AXUIElementRef)anElement;
 
+// systemElement attirbutes
+@property (readonly) AOAccessibilityElement *focusedElement;
+////////////////
+
+@property (readonly) NSString *role;
+
 @property (readonly) NSArray *attributeNames;
 
 @end

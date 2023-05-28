@@ -27,6 +27,7 @@
     }
 
     NSLog(@"attributeNames: %@",[AOAccessibilityElement systemElement].attributeNames);
+    NSLog(@"role: %@",[AOAccessibilityElement systemElement].role);
 
 }
 
