@@ -46,6 +46,17 @@
 			path = AccessibilityObjC;
 			sourceTree = "<group>";
 		};
+		DAAE71E42A23FAAD004C1C31 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				DA9AF1582A2379AB007645BF /* AccessibilityObjC */,
+				DAD838922A19602700BE05E3 /* AppDelegate.h */,
+				DAD838932A19602700BE05E3 /* AppDelegate.m */,
+				DAD8389A2A19602900BE05E3 /* main.m */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
 		DAD838712A195FBA00BE05E3 = {
 			isa = PBXGroup;
 			children = (
@@ -65,12 +76,9 @@
 		DAD838912A19602700BE05E3 /* UITextElementInspector */ = {
 			isa = PBXGroup;
 			children = (
-				DA9AF1582A2379AB007645BF /* AccessibilityObjC */,
-				DAD838922A19602700BE05E3 /* AppDelegate.h */,
-				DAD838932A19602700BE05E3 /* AppDelegate.m */,
+				DAAE71E42A23FAAD004C1C31 /* Sources */,
 				DAD838952A19602900BE05E3 /* Assets.xcassets */,
 				DAD838972A19602900BE05E3 /* MainMenu.xib */,
-				DAD8389A2A19602900BE05E3 /* main.m */,
 				DAD8389C2A19602900BE05E3 /* UITextElementInspector.entitlements */,
 			);
 			path = UITextElementInspector;
