@@ -57,6 +57,16 @@
 			path = Sources;
 			sourceTree = "<group>";
 		};
+		DAAE71E52A23FAF1004C1C31 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				DAD838952A19602900BE05E3 /* Assets.xcassets */,
+				DAD838972A19602900BE05E3 /* MainMenu.xib */,
+				DAD8389C2A19602900BE05E3 /* UITextElementInspector.entitlements */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
 		DAD838712A195FBA00BE05E3 = {
 			isa = PBXGroup;
 			children = (
@@ -76,10 +86,8 @@
 		DAD838912A19602700BE05E3 /* UITextElementInspector */ = {
 			isa = PBXGroup;
 			children = (
+				DAAE71E52A23FAF1004C1C31 /* Resources */,
 				DAAE71E42A23FAAD004C1C31 /* Sources */,
-				DAD838952A19602900BE05E3 /* Assets.xcassets */,
-				DAD838972A19602900BE05E3 /* MainMenu.xib */,
-				DAD8389C2A19602900BE05E3 /* UITextElementInspector.entitlements */,
 			);
 			path = UITextElementInspector;
 			sourceTree = "<group>";
@@ -288,7 +296,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = UITextElementInspector/UITextElementInspector.entitlements;
+				CODE_SIGN_ENTITLEMENTS = UITextElementInspector/Resources/UITextElementInspector.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -317,7 +325,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = UITextElementInspector/UITextElementInspector.entitlements;
+				CODE_SIGN_ENTITLEMENTS = UITextElementInspector/Resources/UITextElementInspector.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
