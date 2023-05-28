@@ -26,7 +26,7 @@
         [NSApp terminate:self];
     }
 
-    [AOAccessibilityElement systemElement];
+    NSLog(@"attributeNames: %@",[AOAccessibilityElement systemElement].attributeNames);
 
 }
 

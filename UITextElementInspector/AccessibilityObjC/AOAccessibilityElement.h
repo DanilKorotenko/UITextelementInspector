@@ -16,6 +16,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (instancetype)initWithAccessibilityElement:(AXUIElementRef)anElement;
 
+@property (readonly) NSArray *attributeNames;
+
 @end
 
 NS_ASSUME_NONNULL_END
