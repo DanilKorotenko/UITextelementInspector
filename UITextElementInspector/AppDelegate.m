@@ -6,22 +6,28 @@
 //
 
 #import "AppDelegate.h"
+#import "AOAccessibilityElement.h"
 
 @interface AppDelegate ()
 
 @property (strong) IBOutlet NSWindow *window;
+
 @end
 
 @implementation AppDelegate
 
+#pragma mark -
+
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
+    if (!AXIsProcessTrusted())
+    {
+        NSLog(@"Activate accessibility.");
+        [NSApp terminate:self];
+    }
 
-}
+    [AOAccessibilityElement systemElement];
 
-- (void)applicationWillTerminate:(NSNotification *)aNotification
-{
-    
 }
 
 - (BOOL)applicationSupportsSecureRestorableState:(NSApplication *)app
@@ -33,5 +39,9 @@
 {
     return YES;
 }
+
+#pragma mark -
+
+
 
 @end
