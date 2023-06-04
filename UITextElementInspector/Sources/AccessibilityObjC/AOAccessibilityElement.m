@@ -9,6 +9,8 @@
 
 @interface AOAccessibilityElement ()
 
+@property (readonly) AXUIElementRef element;
+
 @end
 
 @implementation AOAccessibilityElement
@@ -32,6 +34,13 @@
     return result;
 }
 
++ (AOAccessibilityElement *)elementWithAXUIElement:(AXUIElementRef)anElement
+{
+    return [[AOAccessibilityElement alloc] initWithAccessibilityElement:anElement];
+}
+
+#pragma mark -
+
 - (instancetype)initWithAccessibilityElement:(AXUIElementRef)anElement
 {
     self = [super init];
@@ -53,6 +62,15 @@
     {
         CFRelease(_element);
     }
+}
+
+- (BOOL)isEqual:(id)other
+{
+    if([other isKindOfClass:[self class]])
+    {
+        return CFEqual(self.element, [(AOAccessibilityElement *)other element]) == TRUE;
+    }
+    return NO;
 }
 
 #pragma mark -
@@ -92,6 +110,13 @@
         attributeNames = CFBridgingRelease(attrNamesRef);
     }
     return attributeNames;
+}
+
+#pragma mark -
+
+- (AXUIElementRef)element
+{
+    return _element;
 }
 
 #pragma mark -

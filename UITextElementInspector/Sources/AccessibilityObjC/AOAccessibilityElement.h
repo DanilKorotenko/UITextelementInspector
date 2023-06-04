@@ -13,8 +13,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface AOAccessibilityElement : NSObject
 
 + (AOAccessibilityElement *)systemElement;
-
-- (instancetype)initWithAccessibilityElement:(AXUIElementRef)anElement;
++ (AOAccessibilityElement *)elementWithAXUIElement:(AXUIElementRef)anElement;
 
 // systemElement attirbutes
 @property (readonly) AOAccessibilityElement *focusedElement;
