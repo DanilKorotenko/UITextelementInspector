@@ -20,6 +20,17 @@ NS_ASSUME_NONNULL_BEGIN
 ////////////////
 
 @property (readonly) NSString *role;
+@property (readonly) NSString *subrole;
+
+#pragma mark textField
+
+@property (readonly) BOOL isTextArea;
+@property (readonly) BOOL isRegularTextField;
+@property (readonly) BOOL isSecureTextField;
+
+@property (readonly) NSString *stringValue;
+
+#pragma mark -
 
 @property (readonly) NSArray *attributeNames;
 

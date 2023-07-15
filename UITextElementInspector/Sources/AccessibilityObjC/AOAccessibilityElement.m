@@ -19,6 +19,7 @@
 }
 
 @synthesize role;
+@synthesize subrole;
 
 @synthesize attributeNames;
 
@@ -77,10 +78,11 @@
 
 - (AOAccessibilityElement *)focusedElement
 {
+    AOAccessibilityElement *result = nil;
     AXUIElementRef element = [self copyValueOfAttribute:NSAccessibilityFocusedUIElementAttribute];
-    AOAccessibilityElement *result = [[AOAccessibilityElement alloc] initWithAccessibilityElement:element];
     if (NULL != element)
     {
+        result = [[AOAccessibilityElement alloc] initWithAccessibilityElement:element];
         CFRelease(element);
     }
     return result;
@@ -100,6 +102,55 @@
     }
     return role;
 }
+
+- (NSString *)subrole
+{
+    if (nil == subrole)
+    {
+        CFStringRef subroleRef = [self copyValueOfAttribute:NSAccessibilitySubroleAttribute];
+        if (NULL != subroleRef)
+        {
+            subrole = CFBridgingRelease(subroleRef);
+        }
+    }
+    return subrole;
+}
+
+#pragma mark textField
+
+- (BOOL)isTextArea
+{
+    return [self.role isEqualToString:NSAccessibilityTextAreaRole];
+}
+
+- (BOOL)isRegularTextField
+{
+    return self.subrole == nil && [self.role isEqualToString:NSAccessibilityTextFieldRole];
+}
+
+- (BOOL)isSecureTextField
+{
+    return [self.subrole isEqualToString:NSAccessibilitySecureTextFieldSubrole];
+}
+
+- (NSString *)stringValue
+{
+    NSString *result = nil;
+
+    CFTypeRef rawValue = [self copyValueOfAttribute:NSAccessibilityValueAttribute];
+    if (NULL != rawValue)
+    {
+        if (CFGetTypeID(rawValue) == CFStringGetTypeID())
+        {
+            CFStringRef stringValueRef = (CFStringRef)rawValue;
+            result = (__bridge NSString *)(stringValueRef);
+        }
+        CFRelease(rawValue);
+    }
+    return nil;
+}
+
+#pragma mark -
 
 - (NSArray *)attributeNames
 {
@@ -173,24 +224,6 @@ NSString *const UIElementUtilitiesNoDescription = @"No Description";
 + (void)performAction:(NSString *)actionName ofUIElement:(AXUIElementRef)element
 {
     AXUIElementPerformAction( element, (CFStringRef)actionName);
-}
-
-+ (id)valueOfAttribute:(NSString *)attribute ofUIElement:(AXUIElementRef)element
-{
-    id result = nil;
-    NSArray *attributeNames = [UIElementUtilities attributeNamesOfUIElement:element];
-
-    if (attributeNames)
-    {
-        CFTypeRef resultRef = NULL;
-        if (([attributeNames indexOfObject:(NSString *)attribute] != NSNotFound) &&
-            AXUIElementCopyAttributeValue(element, (CFStringRef)attribute, &resultRef) == kAXErrorSuccess
-        )
-        {
-            result = CFBridgingRelease(resultRef);
-        }
-    }
-    return result;
 }
 
 + (BOOL)canSetAttribute:(NSString *)attributeName ofUIElement:(AXUIElementRef)element
@@ -277,7 +310,6 @@ NSString *const UIElementUtilitiesNoDescription = @"No Description";
         }
     }
 }
-
 
 + (AXUIElementRef)parentOfUIElement:(AXUIElementRef)element
 {
