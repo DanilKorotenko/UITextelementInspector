@@ -15,6 +15,8 @@
 
 @property (strong) NSTimer *timer;
 
+@property (strong) AOAccessibilityElement *currentElement;
+
 @end
 
 @implementation AppDelegate
@@ -50,24 +52,24 @@
 
 - (void)updateUI
 {
-    NSMutableString *textToSet = [NSMutableString string];
-
     AOAccessibilityElement *focusedElement = [[AOAccessibilityElement systemElement] focusedElement];
-//    NSLog(@"attributeNames: %@",focusedElement.attributeNames);
 
-//    [textToSet appendFormat:@"focused element attributeNames: %@\n", focusedElement.attributeNames];
-    [textToSet appendFormat:@"focused element role: %@\n", focusedElement.role];
-    [textToSet appendFormat:@"focused element subrole: %@\n", focusedElement.subrole];
-    [textToSet appendFormat:@"focused element isRegularTextField: %@\n",
-        focusedElement.isRegularTextField ? @"YES" : @"NO"];
-    [textToSet appendFormat:@"focused element isTextArea: %@\n",
-        focusedElement.isTextArea ? @"YES" : @"NO"];
-    [textToSet appendFormat:@"focused element isSecureTextField: %@\n",
-        focusedElement.isSecureTextField ? @"YES" : @"NO"];
-    [textToSet appendFormat:@"focused element string value: %@\n",
-        focusedElement.stringValue];
+    if (self.currentElement != focusedElement)
+    {
+        NSMutableString *textToSet = [NSMutableString string];
+        [textToSet appendFormat:@"focused element role: %@\n", focusedElement.role];
+        [textToSet appendFormat:@"focused element subrole: %@\n", focusedElement.subrole];
+        [textToSet appendFormat:@"focused element isRegularTextField: %@\n",
+            focusedElement.isRegularTextField ? @"YES" : @"NO"];
+        [textToSet appendFormat:@"focused element isTextArea: %@\n",
+            focusedElement.isTextArea ? @"YES" : @"NO"];
+        [textToSet appendFormat:@"focused element isSecureTextField: %@\n",
+            focusedElement.isSecureTextField ? @"YES" : @"NO"];
+        [textToSet appendFormat:@"focused element string value: %@\n",
+            focusedElement.stringValue];
 
-    self.textField.stringValue = textToSet;
+        self.textField.stringValue = textToSet;
+    }
 }
 
 @end

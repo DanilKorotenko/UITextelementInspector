@@ -29,9 +29,33 @@
     if(nil == result)
     {
         AXUIElementRef systemWide = AXUIElementCreateSystemWide();
-        result = [[AOAccessibilityElement alloc] initWithAccessibilityElement:systemWide];
+        result = [AOAccessibilityElement elementWithAXUIElement:systemWide];
         CFRelease(systemWide);
     }
+    return result;
+}
+
++ (AOAccessibilityElement *)elementForCurrentApplication
+{
+    static NSMutableDictionary *cachedElements = nil;
+    if (nil == cachedElements)
+    {
+        cachedElements = [NSMutableDictionary dictionary];
+    }
+
+    pid_t processID = [NSWorkspace sharedWorkspace].frontmostApplication.processIdentifier;
+    NSString *pidKey = [NSString stringWithFormat:@"%d", processID];
+
+    AOAccessibilityElement *result = [cachedElements objectForKey:pidKey];
+
+    if (nil == result)
+    {
+        AXUIElementRef appElement = AXUIElementCreateApplication(processID);
+        result = [AOAccessibilityElement elementWithAXUIElement:appElement];
+        [cachedElements setObject:result forKey:pidKey];
+        CFRelease(appElement);
+    }
+
     return result;
 }
 
@@ -76,10 +100,11 @@
 
 #pragma mark -
 
-- (AOAccessibilityElement *)focusedElement
+- (AOAccessibilityElement * _Nullable)focusedElement
 {
     AOAccessibilityElement *result = nil;
-    AXUIElementRef element = [self copyValueOfAttribute:NSAccessibilityFocusedUIElementAttribute];
+//    AXUIElementRef element = [self copyValueOfAttribute:NSAccessibilityFocusedUIElementAttribute];
+    AXUIElementRef element = [self copyValueOfAttribute:(NSString *)kAXFocusedUIElementAttribute];
     if (NULL != element)
     {
         result = [[AOAccessibilityElement alloc] initWithAccessibilityElement:element];
@@ -133,11 +158,12 @@
     return [self.subrole isEqualToString:NSAccessibilitySecureTextFieldSubrole];
 }
 
-- (NSString *)stringValue
+- (NSString * _Nullable)stringValue
 {
     NSString *result = nil;
 
-    CFTypeRef rawValue = [self copyValueOfAttribute:NSAccessibilityValueAttribute];
+//    CFTypeRef rawValue = [self copyValueOfAttribute:NSAccessibilityValueAttribute];
+    CFTypeRef rawValue = [self copyValueOfAttribute:(NSString *)kAXValueAttribute];
     if (NULL != rawValue)
     {
         if (CFGetTypeID(rawValue) == CFStringGetTypeID())
@@ -147,7 +173,7 @@
         }
         CFRelease(rawValue);
     }
-    return nil;
+    return result;
 }
 
 #pragma mark -
@@ -177,12 +203,44 @@
     CFTypeRef resultRef = NULL;
     if ([self.attributeNames containsObject:anAttributeName])
     {
-        if (AXUIElementCopyAttributeValue(_element, (CFStringRef)anAttributeName, &resultRef) != kAXErrorSuccess)
+        AXError result = AXUIElementCopyAttributeValue(_element, (CFStringRef)anAttributeName, &resultRef);
+        if (result != kAXErrorSuccess)
         {
             resultRef = NULL;
+            NSLog(@"copyValueOfAttribute: %@, error: %@", anAttributeName, [[self class] errorDescription:result]);
         }
     }
     return resultRef;
+}
+
++ (NSString *)errorDescription:(AXError)anError
+{
+    NSString *result = nil;
+
+    switch (anError)
+    {
+        case kAXErrorSuccess:                           { result = @"kAXErrorSuccess"; break; }
+        case kAXErrorFailure:                           { result = @"kAXErrorFailure"; break; }
+        case kAXErrorIllegalArgument:                   { result = @"kAXErrorIllegalArgument"; break; }
+        case kAXErrorInvalidUIElement:                  { result = @"kAXErrorInvalidUIElement"; break; }
+        case kAXErrorInvalidUIElementObserver:          { result = @"kAXErrorInvalidUIElementObserver"; break; }
+        case kAXErrorCannotComplete:                    { result = @"kAXErrorCannotComplete"; break; }
+        case kAXErrorAttributeUnsupported:              { result = @"kAXErrorAttributeUnsupported"; break; }
+        case kAXErrorActionUnsupported:                 { result = @"kAXErrorActionUnsupported"; break; }
+        case kAXErrorNotificationUnsupported:           { result = @"kAXErrorNotificationUnsupported"; break; }
+        case kAXErrorNotImplemented:                    { result = @"kAXErrorNotImplemented"; break; }
+        case kAXErrorNotificationAlreadyRegistered:     { result = @"kAXErrorNotificationAlreadyRegistered"; break; }
+        case kAXErrorNotificationNotRegistered:         { result = @"kAXErrorNotificationNotRegistered"; break; }
+        case kAXErrorAPIDisabled:                       { result = @"kAXErrorAPIDisabled"; break; }
+        case kAXErrorNoValue:                           { result = @"kAXErrorNoValue"; break; }
+        case kAXErrorParameterizedAttributeUnsupported: { result = @"kAXErrorParameterizedAttributeUnsupported"; break; }
+        case kAXErrorNotEnoughPrecision:                { result = @"kAXErrorNotEnoughPrecision"; break; }
+
+        default:
+            break;
+    }
+
+    return result;
 }
 
 

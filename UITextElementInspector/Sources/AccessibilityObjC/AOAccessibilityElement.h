@@ -13,10 +13,12 @@ NS_ASSUME_NONNULL_BEGIN
 @interface AOAccessibilityElement : NSObject
 
 + (AOAccessibilityElement *)systemElement;
++ (AOAccessibilityElement *)elementForCurrentApplication;
 + (AOAccessibilityElement *)elementWithAXUIElement:(AXUIElementRef)anElement;
 
-// systemElement attirbutes
-@property (readonly) AOAccessibilityElement *focusedElement;
+// systemElement
+// elementForCurrentApplication
+@property (readonly, nullable) AOAccessibilityElement *focusedElement;
 ////////////////
 
 @property (readonly) NSString *role;
@@ -28,7 +30,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (readonly) BOOL isRegularTextField;
 @property (readonly) BOOL isSecureTextField;
 
-@property (readonly) NSString *stringValue;
+@property (readonly, nullable) NSString *stringValue;
 
 #pragma mark -
 
