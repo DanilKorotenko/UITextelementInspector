@@ -65,6 +65,8 @@
             focusedElement.isTextArea ? @"YES" : @"NO"];
         [textToSet appendFormat:@"focused element isSecureTextField: %@\n",
             focusedElement.isSecureTextField ? @"YES" : @"NO"];
+        [textToSet appendFormat:@"focused element selected Text range: %@\n",
+            [AOAccessibilityElement rangeDescription:focusedElement.selectedTextRange]];
         [textToSet appendFormat:@"focused element string value: %@\n",
             focusedElement.stringValue];
 

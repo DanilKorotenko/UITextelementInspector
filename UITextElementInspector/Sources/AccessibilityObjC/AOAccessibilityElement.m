@@ -176,6 +176,27 @@
     return result;
 }
 
+- (NSRange)selectedTextRange
+{
+    NSRange result = NSMakeRange(NSNotFound, NSNotFound);
+
+    CFTypeRef rawValue = [self copyValueOfAttribute:(NSString *)kAXSelectedTextRangeAttribute];
+    if (NULL != rawValue)
+    {
+        if (AXValueGetType(rawValue) == kAXValueCFRangeType)
+        {
+            CFRange range;
+            if (AXValueGetValue(rawValue, kAXValueCFRangeType, &range))
+            {
+                result = NSMakeRange(range.location, range.length);
+            }
+        }
+        CFRelease(rawValue);
+    }
+
+    return result;
+}
+
 #pragma mark -
 
 - (NSArray *)attributeNames
@@ -211,6 +232,13 @@
         }
     }
     return resultRef;
+}
+
++ (NSString *)rangeDescription:(NSRange)aRange
+{
+    return [NSString stringWithFormat:@"[%@, %@]",
+        (aRange.location == NSNotFound ? @"nil" : [NSString stringWithFormat:@"%lu", (unsigned long)aRange.location]),
+        (aRange.length == NSNotFound ? @"nil" : [NSString stringWithFormat:@"%lu", (unsigned long)aRange.length])];
 }
 
 + (NSString *)errorDescription:(AXError)anError

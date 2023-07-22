@@ -16,6 +16,8 @@ NS_ASSUME_NONNULL_BEGIN
 + (AOAccessibilityElement *)elementForCurrentApplication;
 + (AOAccessibilityElement *)elementWithAXUIElement:(AXUIElementRef)anElement;
 
++ (NSString *)rangeDescription:(NSRange)aRange;
+
 // systemElement
 // elementForCurrentApplication
 @property (readonly, nullable) AOAccessibilityElement *focusedElement;
@@ -31,6 +33,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (readonly) BOOL isSecureTextField;
 
 @property (readonly, nullable) NSString *stringValue;
+
+@property (readonly) NSRange selectedTextRange;
 
 #pragma mark -
 
