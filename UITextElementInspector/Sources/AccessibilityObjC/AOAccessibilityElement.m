@@ -66,6 +66,45 @@
 
 #pragma mark -
 
++ (NSString *)rangeDescription:(NSRange)aRange
+{
+    return [NSString stringWithFormat:@"[%@, %@]",
+        (aRange.location == NSNotFound ? @"nil" : [NSString stringWithFormat:@"%lu", (unsigned long)aRange.location]),
+        (aRange.length == NSNotFound ? @"nil" : [NSString stringWithFormat:@"%lu", (unsigned long)aRange.length])];
+}
+
++ (NSString *)errorDescription:(AXError)anError
+{
+    NSString *result = nil;
+
+    switch (anError)
+    {
+        case kAXErrorSuccess:                           { result = @"kAXErrorSuccess"; break; }
+        case kAXErrorFailure:                           { result = @"kAXErrorFailure"; break; }
+        case kAXErrorIllegalArgument:                   { result = @"kAXErrorIllegalArgument"; break; }
+        case kAXErrorInvalidUIElement:                  { result = @"kAXErrorInvalidUIElement"; break; }
+        case kAXErrorInvalidUIElementObserver:          { result = @"kAXErrorInvalidUIElementObserver"; break; }
+        case kAXErrorCannotComplete:                    { result = @"kAXErrorCannotComplete"; break; }
+        case kAXErrorAttributeUnsupported:              { result = @"kAXErrorAttributeUnsupported"; break; }
+        case kAXErrorActionUnsupported:                 { result = @"kAXErrorActionUnsupported"; break; }
+        case kAXErrorNotificationUnsupported:           { result = @"kAXErrorNotificationUnsupported"; break; }
+        case kAXErrorNotImplemented:                    { result = @"kAXErrorNotImplemented"; break; }
+        case kAXErrorNotificationAlreadyRegistered:     { result = @"kAXErrorNotificationAlreadyRegistered"; break; }
+        case kAXErrorNotificationNotRegistered:         { result = @"kAXErrorNotificationNotRegistered"; break; }
+        case kAXErrorAPIDisabled:                       { result = @"kAXErrorAPIDisabled"; break; }
+        case kAXErrorNoValue:                           { result = @"kAXErrorNoValue"; break; }
+        case kAXErrorParameterizedAttributeUnsupported: { result = @"kAXErrorParameterizedAttributeUnsupported"; break; }
+        case kAXErrorNotEnoughPrecision:                { result = @"kAXErrorNotEnoughPrecision"; break; }
+
+        default:
+            break;
+    }
+
+    return result;
+}
+
+#pragma mark -
+
 - (instancetype)initWithAccessibilityElement:(AXUIElementRef)anElement
 {
     self = [super init];
@@ -179,7 +218,6 @@
 - (NSRange)selectedTextRange
 {
     NSRange result = NSMakeRange(NSNotFound, NSNotFound);
-
     CFTypeRef rawValue = [self copyValueOfAttribute:(NSString *)kAXSelectedTextRangeAttribute];
     if (NULL != rawValue)
     {
@@ -193,9 +231,45 @@
         }
         CFRelease(rawValue);
     }
+    return result;
+}
+
+// if selected text range length > 0, returns selected text
+// if selected text range length == 0, calculate current word
+- (NSString *)currentWordOrText
+{
+    NSString *stringValue = self.stringValue;
+    NSRange selectedRange = self.selectedTextRange;
+
+    if (nil == stringValue ||
+        selectedRange.location == NSNotFound)
+    {
+        return nil;
+    }
+
+    NSString *result = nil;
+
+    if (selectedRange.length != 0 && selectedRange.length != NSNotFound)
+    {
+        result = [stringValue substringWithRange:selectedRange];
+    }
+    else
+    {
+        NSRange wordStart = [stringValue rangeOfCharacterFromSet:
+            [NSCharacterSet whitespaceAndNewlineCharacterSet]
+            options:NSBackwardsSearch range:NSMakeRange(0, selectedRange.location)];
+
+        NSRange wordEnd = [stringValue rangeOfCharacterFromSet:
+            [NSCharacterSet whitespaceAndNewlineCharacterSet]
+            options:0
+            range:NSMakeRange(selectedRange.location, stringValue.length - selectedRange.location)];
+
+        result = [stringValue substringWithRange:NSMakeRange(wordStart.location, wordEnd.location - wordStart.location)];
+    }
 
     return result;
 }
+
 
 #pragma mark -
 
@@ -233,44 +307,6 @@
     }
     return resultRef;
 }
-
-+ (NSString *)rangeDescription:(NSRange)aRange
-{
-    return [NSString stringWithFormat:@"[%@, %@]",
-        (aRange.location == NSNotFound ? @"nil" : [NSString stringWithFormat:@"%lu", (unsigned long)aRange.location]),
-        (aRange.length == NSNotFound ? @"nil" : [NSString stringWithFormat:@"%lu", (unsigned long)aRange.length])];
-}
-
-+ (NSString *)errorDescription:(AXError)anError
-{
-    NSString *result = nil;
-
-    switch (anError)
-    {
-        case kAXErrorSuccess:                           { result = @"kAXErrorSuccess"; break; }
-        case kAXErrorFailure:                           { result = @"kAXErrorFailure"; break; }
-        case kAXErrorIllegalArgument:                   { result = @"kAXErrorIllegalArgument"; break; }
-        case kAXErrorInvalidUIElement:                  { result = @"kAXErrorInvalidUIElement"; break; }
-        case kAXErrorInvalidUIElementObserver:          { result = @"kAXErrorInvalidUIElementObserver"; break; }
-        case kAXErrorCannotComplete:                    { result = @"kAXErrorCannotComplete"; break; }
-        case kAXErrorAttributeUnsupported:              { result = @"kAXErrorAttributeUnsupported"; break; }
-        case kAXErrorActionUnsupported:                 { result = @"kAXErrorActionUnsupported"; break; }
-        case kAXErrorNotificationUnsupported:           { result = @"kAXErrorNotificationUnsupported"; break; }
-        case kAXErrorNotImplemented:                    { result = @"kAXErrorNotImplemented"; break; }
-        case kAXErrorNotificationAlreadyRegistered:     { result = @"kAXErrorNotificationAlreadyRegistered"; break; }
-        case kAXErrorNotificationNotRegistered:         { result = @"kAXErrorNotificationNotRegistered"; break; }
-        case kAXErrorAPIDisabled:                       { result = @"kAXErrorAPIDisabled"; break; }
-        case kAXErrorNoValue:                           { result = @"kAXErrorNoValue"; break; }
-        case kAXErrorParameterizedAttributeUnsupported: { result = @"kAXErrorParameterizedAttributeUnsupported"; break; }
-        case kAXErrorNotEnoughPrecision:                { result = @"kAXErrorNotEnoughPrecision"; break; }
-
-        default:
-            break;
-    }
-
-    return result;
-}
-
 
 /*
 
