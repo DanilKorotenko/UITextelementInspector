@@ -187,25 +187,6 @@
 
 #pragma mark -
 
-- (NSRange)selectedTextRange
-{
-    NSRange result = NSMakeRange(NSNotFound, NSNotFound);
-    CFTypeRef rawValue = [self copyValueOfAttribute:(NSString *)kAXSelectedTextRangeAttribute];
-    if (NULL != rawValue)
-    {
-        if (AXValueGetType(rawValue) == kAXValueCFRangeType)
-        {
-            CFRange range;
-            if (AXValueGetValue(rawValue, kAXValueCFRangeType, &range))
-            {
-                result = NSMakeRange(range.location, range.length);
-            }
-        }
-        CFRelease(rawValue);
-    }
-    return result;
-}
-
 // if selected text range length > 0, returns selected text
 // if selected text range length == 0, calculate current word
 - (NSRange)currentWordOrTextRange
@@ -317,6 +298,25 @@
         {
             CFStringRef stringValueRef = (CFStringRef)rawValue;
             result = (__bridge NSString *)(stringValueRef);
+        }
+        CFRelease(rawValue);
+    }
+    return result;
+}
+
+- (NSRange)selectedTextRange
+{
+    NSRange result = NSMakeRange(NSNotFound, NSNotFound);
+    CFTypeRef rawValue = [self copyValueOfAttribute:(NSString *)kAXSelectedTextRangeAttribute];
+    if (NULL != rawValue)
+    {
+        if (AXValueGetType(rawValue) == kAXValueCFRangeType)
+        {
+            CFRange range;
+            if (AXValueGetValue(rawValue, kAXValueCFRangeType, &range))
+            {
+                result = NSMakeRange(range.location, range.length);
+            }
         }
         CFRelease(rawValue);
     }

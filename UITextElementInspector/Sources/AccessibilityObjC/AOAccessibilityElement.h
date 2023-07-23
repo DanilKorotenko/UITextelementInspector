@@ -33,8 +33,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark -
 
-@property (readonly, nullable) NSString *currentWordOrText;
 @property (readonly) NSRange currentWordOrTextRange;
+@property (readonly, nullable) NSString *currentWordOrText;
 
 @end
 
