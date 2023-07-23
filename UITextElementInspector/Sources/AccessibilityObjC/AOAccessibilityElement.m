@@ -66,13 +66,6 @@
 
 #pragma mark -
 
-+ (NSString *)rangeDescription:(NSRange)aRange
-{
-    return [NSString stringWithFormat:@"[%@, %@]",
-        (aRange.location == NSNotFound ? @"nil" : [NSString stringWithFormat:@"%lu", (unsigned long)aRange.location]),
-        (aRange.length == NSNotFound ? @"nil" : [NSString stringWithFormat:@"%lu", (unsigned long)aRange.length])];
-}
-
 + (NSString *)errorDescription:(AXError)anError
 {
     NSString *result = nil;

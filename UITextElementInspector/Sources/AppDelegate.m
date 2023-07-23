@@ -66,7 +66,7 @@
         [textToSet appendFormat:@"focused element isSecureTextField: %@\n",
             focusedElement.isSecureTextField ? @"YES" : @"NO"];
         [textToSet appendFormat:@"focused element selected Text range: %@\n",
-            [AOAccessibilityElement rangeDescription:focusedElement.selectedTextRange]];
+            NSStringFromRange(focusedElement.selectedTextRange)];
         [textToSet appendFormat:@"focused element current word: %@\n",
             focusedElement.currentWordOrText];
         [textToSet appendFormat:@"focused element string value: %@\n",

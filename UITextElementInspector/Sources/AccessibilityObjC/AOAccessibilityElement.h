@@ -16,8 +16,6 @@ NS_ASSUME_NONNULL_BEGIN
 + (AOAccessibilityElement *)elementForCurrentApplication;
 + (AOAccessibilityElement *)elementWithAXUIElement:(AXUIElementRef)anElement;
 
-+ (NSString *)rangeDescription:(NSRange)aRange;
-
 // systemElement
 // elementForCurrentApplication
 @property (readonly, nullable) AOAccessibilityElement *focusedElement;
