@@ -277,6 +277,10 @@
         {
             wordStart.location = 0;
         }
+        else
+        {
+            wordStart.location = wordStart.location + 1;
+        }
 
         NSRange wordEnd = [stringValue rangeOfCharacterFromSet:wordBoundarySet
             options:0
