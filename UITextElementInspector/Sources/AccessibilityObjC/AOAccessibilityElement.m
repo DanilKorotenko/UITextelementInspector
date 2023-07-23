@@ -255,6 +255,11 @@
     return result;
 }
 
+//- (BOOL)isPossibleToSetCurrentWordOrText
+//{
+//
+//}
+
 #pragma mark Private
 
 #pragma mark -
@@ -297,9 +302,12 @@
         if (CFGetTypeID(rawValue) == CFStringGetTypeID())
         {
             CFStringRef stringValueRef = (CFStringRef)rawValue;
-            result = (__bridge NSString *)(stringValueRef);
+            result = CFBridgingRelease(stringValueRef);
         }
-        CFRelease(rawValue);
+        else
+        {
+            CFRelease(rawValue);
+        }
     }
     return result;
 }
@@ -330,7 +338,7 @@
     if (nil == attributeNames)
     {
         CFArrayRef attrNamesRef = NULL;
-        AXUIElementCopyAttributeNames(_element, &attrNamesRef);
+        AXUIElementCopyAttributeNames(self.element, &attrNamesRef);
         attributeNames = CFBridgingRelease(attrNamesRef);
     }
     return attributeNames;
@@ -350,7 +358,7 @@
     CFTypeRef resultRef = NULL;
     if ([self.attributeNames containsObject:anAttributeName])
     {
-        AXError result = AXUIElementCopyAttributeValue(_element, (CFStringRef)anAttributeName, &resultRef);
+        AXError result = AXUIElementCopyAttributeValue(self.element, (CFStringRef)anAttributeName, &resultRef);
         if (result != kAXErrorSuccess)
         {
             resultRef = NULL;
@@ -358,6 +366,15 @@
         }
     }
     return resultRef;
+}
+
+- (BOOL)canSetAttribute:(NSString *)attributeName
+{
+    Boolean isSettable = false;
+
+    AXUIElementIsAttributeSettable(self.element, (CFStringRef)attributeName, &isSettable);
+
+    return (BOOL)isSettable;
 }
 
 /*

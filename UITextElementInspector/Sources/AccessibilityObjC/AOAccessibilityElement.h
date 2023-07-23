@@ -35,6 +35,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (readonly) NSRange currentWordOrTextRange;
 @property (readonly, nullable) NSString *currentWordOrText;
+//@property (readonly) BOOL isPossibleToSetCurrentWordOrText;
 
 @end
 
