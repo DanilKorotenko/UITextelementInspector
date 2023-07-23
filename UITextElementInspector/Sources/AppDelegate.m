@@ -10,7 +10,7 @@
 
 @interface AppDelegate ()
 
-@property (strong) IBOutlet NSWindow *window;
+@property (strong) IBOutlet NSPanel *panel;
 @property (strong) IBOutlet NSTextField *textField;
 
 @property (strong) NSTimer *timer;
@@ -30,6 +30,8 @@
         NSLog(@"Accessibility is not granted. Go to settings and grant accessibility to this application.");
         [NSApp terminate:self];
     }
+
+    self.panel.level = NSMainMenuWindowLevel;
 
     self.timer = [NSTimer scheduledTimerWithTimeInterval:0.1f repeats:YES
         block:^(NSTimer * _Nonnull timer)
