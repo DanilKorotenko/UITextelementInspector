@@ -54,7 +54,7 @@
 {
     AOAccessibilityElement *focusedElement = [[AOAccessibilityElement systemElement] focusedElement];
 
-    if (self.currentElement != focusedElement)
+    if (self.currentElement != focusedElement && !focusedElement.isOurElement)
     {
         NSMutableString *textToSet = [NSMutableString string];
         [textToSet appendFormat:@"focused element role: %@\n", focusedElement.role];

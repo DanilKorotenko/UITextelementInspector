@@ -21,6 +21,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (readonly, nullable) AOAccessibilityElement *focusedElement;
 ////////////////
 
+@property (readonly) pid_t processIdentifier;
+@property (readonly) BOOL isOurElement;
+
 @property (readonly) NSString *role;
 @property (readonly) NSString *subrole;
 

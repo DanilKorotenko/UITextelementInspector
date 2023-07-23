@@ -147,6 +147,24 @@
 
 #pragma mark -
 
+- (pid_t)processIdentifier
+{
+    pid_t pid = 0;
+    if (AXUIElementGetPid (_element, &pid) == kAXErrorSuccess)
+    {
+        return pid;
+    }
+    else
+    {
+        return 0;
+    }
+}
+
+- (BOOL)isOurElement
+{
+    return self.processIdentifier == getpid();
+}
+
 - (NSString *)role
 {
     if (nil == role)
@@ -329,23 +347,6 @@
 }
 
 /*
-
-NSString *const UIElementUtilitiesNoDescription = @"No Description";
-
-#pragma mark -
-
-+ (pid_t)processIdentifierOfUIElement:(AXUIElementRef)element
-{
-    pid_t pid = 0;
-    if (AXUIElementGetPid (element, &pid) == kAXErrorSuccess)
-    {
-        return pid;
-    }
-    else
-    {
-        return 0;
-    }
-}
 
 + (NSArray *)actionNamesOfUIElement:(AXUIElementRef)element
 {
