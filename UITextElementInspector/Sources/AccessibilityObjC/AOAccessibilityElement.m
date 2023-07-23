@@ -14,6 +14,8 @@
 @property (readonly) NSString *subrole;
 @property (readonly) NSArray *attributeNames;
 
+@property (readwrite, nullable) NSString *stringValue;
+
 @end
 
 @implementation AOAccessibilityElement
@@ -255,10 +257,34 @@
     return result;
 }
 
-//- (BOOL)isPossibleToSetCurrentWordOrText
-//{
-//
-//}
+- (BOOL)isPossibleToSetCurrentWordOrText
+{
+    BOOL canSetValue = [self canSetAttribute:(NSString *)kAXValueAttribute];
+
+    BOOL result = self.stringValue.length != 0 && canSetValue;
+
+    return result;
+}
+
+- (void)setCurrentWordOrText:(NSString * _Nullable)aNewCurrentWordOrText
+{
+    NSString *stringValue = self.stringValue;
+    if (self.currentWordOrText.length != 0)
+    {
+        NSRange currentWordRange = self.currentWordOrTextRange;
+        NSMutableString *newStringValue = [NSMutableString stringWithString:stringValue];
+
+        if (aNewCurrentWordOrText.length == 0)
+        {
+            [newStringValue deleteCharactersInRange:currentWordRange];
+        }
+        else
+        {
+            [newStringValue replaceCharactersInRange:currentWordRange withString:aNewCurrentWordOrText];
+        }
+        [self setStringValue:newStringValue];
+    }
+}
 
 #pragma mark Private
 
@@ -310,6 +336,19 @@
         }
     }
     return result;
+}
+
+- (void)setStringValue:(NSString *)stringValue
+{
+    CFTypeRef rawValue = [self copyValueOfAttribute:(NSString *)kAXValueAttribute];
+    if (NULL != rawValue)
+    {
+        if (CFGetTypeID(rawValue) == CFStringGetTypeID())
+        {
+            AXUIElementSetAttributeValue(self.element, kAXValueAttribute, (__bridge CFTypeRef _Nonnull)(stringValue) );
+        }
+        CFRelease(rawValue);
+    }
 }
 
 - (NSRange)selectedTextRange

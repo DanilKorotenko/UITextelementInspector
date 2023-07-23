@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		DA9AF15B2A237A10007645BF /* AOAccessibilityElement.m in Sources */ = {isa = PBXBuildFile; fileRef = DA9AF15A2A237A10007645BF /* AOAccessibilityElement.m */; };
+		DAA67DA62A6D610A00B2B0BC /* HotKeyController.m in Sources */ = {isa = PBXBuildFile; fileRef = DAA67DA52A6D610A00B2B0BC /* HotKeyController.m */; };
 		DAD838942A19602700BE05E3 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD838932A19602700BE05E3 /* AppDelegate.m */; };
 		DAD838962A19602900BE05E3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DAD838952A19602900BE05E3 /* Assets.xcassets */; };
 		DAD838992A19602900BE05E3 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = DAD838972A19602900BE05E3 /* MainMenu.xib */; };
@@ -17,6 +18,8 @@
 /* Begin PBXFileReference section */
 		DA9AF1592A237A10007645BF /* AOAccessibilityElement.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AOAccessibilityElement.h; sourceTree = "<group>"; };
 		DA9AF15A2A237A10007645BF /* AOAccessibilityElement.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AOAccessibilityElement.m; sourceTree = "<group>"; };
+		DAA67DA42A6D610A00B2B0BC /* HotKeyController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HotKeyController.h; sourceTree = "<group>"; };
+		DAA67DA52A6D610A00B2B0BC /* HotKeyController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HotKeyController.m; sourceTree = "<group>"; };
 		DAD838902A19602700BE05E3 /* UITextElementInspector.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UITextElementInspector.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DAD838922A19602700BE05E3 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		DAD838932A19602700BE05E3 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -52,6 +55,8 @@
 				DA9AF1582A2379AB007645BF /* AccessibilityObjC */,
 				DAD838922A19602700BE05E3 /* AppDelegate.h */,
 				DAD838932A19602700BE05E3 /* AppDelegate.m */,
+				DAA67DA42A6D610A00B2B0BC /* HotKeyController.h */,
+				DAA67DA52A6D610A00B2B0BC /* HotKeyController.m */,
 				DAD8389A2A19602900BE05E3 /* main.m */,
 			);
 			path = Sources;
@@ -163,6 +168,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DAD8389B2A19602900BE05E3 /* main.m in Sources */,
+				DAA67DA62A6D610A00B2B0BC /* HotKeyController.m in Sources */,
 				DAD838942A19602700BE05E3 /* AppDelegate.m in Sources */,
 				DA9AF15B2A237A10007645BF /* AOAccessibilityElement.m in Sources */,
 			);

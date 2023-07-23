@@ -7,6 +7,7 @@
 
 #import "AppDelegate.h"
 #import "AOAccessibilityElement.h"
+#import "HotKeyController.h"
 
 @interface AppDelegate ()
 
@@ -38,6 +39,15 @@
         {
             [self updateUI];
         }];
+
+    RegisterLockUIElementHotKey(
+        ^{
+            AOAccessibilityElement *focusedElement = [[AOAccessibilityElement systemElement] focusedElement];
+            if (focusedElement.isPossibleToSetCurrentWordOrText)
+            {
+                [focusedElement setCurrentWordOrText:@"привет"];
+            }
+        });
 }
 
 - (BOOL)applicationSupportsSecureRestorableState:(NSApplication *)app
