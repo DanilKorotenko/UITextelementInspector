@@ -231,14 +231,16 @@
 // if selected text range length == 0, calculate current word
 - (NSRange)currentWordOrTextRange
 {
+    NSString *stringValue = self.stringValue;
     NSRange selectedRange = self.selectedTextRange;
 
-    if (selectedRange.location == NSNotFound)
+    if (nil == stringValue ||
+        selectedRange.location == NSNotFound)
     {
         return NSMakeRange(NSNotFound, NSNotFound);
     }
 
-    NSRange result = NSMakeRange(NSNotFound, NSNotFound);
+    NSRange result;
 
     if (selectedRange.length != 0 && selectedRange.length != NSNotFound)
     {
@@ -253,9 +255,19 @@
         NSRange wordStart = [stringValue rangeOfCharacterFromSet:wordBoundarySet
             options:NSBackwardsSearch range:NSMakeRange(0, selectedRange.location)];
 
+        if (wordStart.location == NSNotFound)
+        {
+            wordStart.location = 0;
+        }
+
         NSRange wordEnd = [stringValue rangeOfCharacterFromSet:wordBoundarySet
             options:0
             range:NSMakeRange(selectedRange.location, stringValue.length - selectedRange.location)];
+
+        if (wordEnd.location == NSNotFound)
+        {
+            wordEnd.location = stringValue.length;
+        }
 
         result = NSMakeRange(wordStart.location, wordEnd.location - wordStart.location);
     }
@@ -265,14 +277,14 @@
 
 - (NSString *)currentWordOrText
 {
+    NSRange currentRange = self.currentWordOrTextRange;
     NSString *stringValue = self.stringValue;
 
-    if (nil == stringValue)
+    if (nil == stringValue || currentRange.location == NSNotFound ||
+        currentRange.length == NSNotFound || currentRange.length == 0)
     {
         return nil;
     }
-
-    NSRange currentRange = self.currentWordOrTextRange;
 
     NSString *result = [stringValue substringWithRange:currentRange];
 
