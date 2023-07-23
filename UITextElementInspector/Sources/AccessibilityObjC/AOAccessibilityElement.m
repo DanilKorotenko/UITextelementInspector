@@ -214,6 +214,11 @@
         [wordBoundarySet formUnionWithCharacterSet:[NSCharacterSet punctuationCharacterSet]];
         [wordBoundarySet formUnionWithCharacterSet:[NSCharacterSet controlCharacterSet]];
 
+        if (selectedRange.location > stringValue.length)
+        {
+            selectedRange.location = stringValue.length;
+        }
+
         NSRange wordStart = [stringValue rangeOfCharacterFromSet:wordBoundarySet
             options:NSBackwardsSearch range:NSMakeRange(0, selectedRange.location)];
 
@@ -283,12 +288,13 @@
             [newStringValue replaceCharactersInRange:currentWordRange withString:aNewCurrentWordOrText];
         }
         [self setStringValue:newStringValue];
+
+        NSRange newSelectedRange = NSMakeRange(currentWordRange.location + aNewCurrentWordOrText.length, 0);
+        [self setSelectedTextRange:newSelectedRange];
     }
 }
 
 #pragma mark Private
-
-#pragma mark -
 
 - (NSString *)role
 {
@@ -345,7 +351,11 @@
     {
         if (CFGetTypeID(rawValue) == CFStringGetTypeID())
         {
-            AXUIElementSetAttributeValue(self.element, kAXValueAttribute, (__bridge CFTypeRef _Nonnull)(stringValue) );
+            if ([self canSetAttribute:(NSString *)kAXValueAttribute])
+            {
+                AXUIElementSetAttributeValue(self.element, kAXValueAttribute,
+                    (__bridge CFTypeRef _Nonnull)(stringValue) );
+            }
         }
         CFRelease(rawValue);
     }
@@ -368,6 +378,31 @@
         CFRelease(rawValue);
     }
     return result;
+}
+
+- (void)setSelectedTextRange:(NSRange)aRange
+{
+    CFTypeRef rawValue = [self copyValueOfAttribute:(NSString *)kAXSelectedTextRangeAttribute];
+    if (NULL != rawValue)
+    {
+        if (AXValueGetType(rawValue) == kAXValueCFRangeType)
+        {
+            if ([self canSetAttribute:(NSString *)kAXSelectedTextRangeAttribute])
+            {
+                CFRange range;
+                range.location = aRange.location;
+                range.length = aRange.length;
+
+                CFTypeRef valueRef = AXValueCreate( kAXValueCFRangeType, (const void *)&range );
+                if (valueRef)
+                {
+                    AXUIElementSetAttributeValue(self.element, kAXSelectedTextRangeAttribute, valueRef );
+                    CFRelease( valueRef );
+                }
+            }
+        }
+        CFRelease(rawValue);
+    }
 }
 
 #pragma mark -
