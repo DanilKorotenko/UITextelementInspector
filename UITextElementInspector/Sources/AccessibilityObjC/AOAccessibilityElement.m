@@ -10,6 +10,9 @@
 @interface AOAccessibilityElement ()
 
 @property (readonly) AXUIElementRef element;
+@property (readonly) NSString *role;
+@property (readonly) NSString *subrole;
+@property (readonly) NSArray *attributeNames;
 
 @end
 
@@ -64,7 +67,7 @@
     return [[AOAccessibilityElement alloc] initWithAccessibilityElement:anElement];
 }
 
-#pragma mark -
+#pragma mark Private Class
 
 + (NSString *)errorDescription:(AXError)anError
 {
@@ -165,33 +168,7 @@
     return self.processIdentifier == getpid();
 }
 
-- (NSString *)role
-{
-    if (nil == role)
-    {
-        CFStringRef roleRef = [self copyValueOfAttribute:NSAccessibilityRoleAttribute];
-        if (NULL != roleRef)
-        {
-            role = CFBridgingRelease(roleRef);
-        }
-    }
-    return role;
-}
-
-- (NSString *)subrole
-{
-    if (nil == subrole)
-    {
-        CFStringRef subroleRef = [self copyValueOfAttribute:NSAccessibilitySubroleAttribute];
-        if (NULL != subroleRef)
-        {
-            subrole = CFBridgingRelease(subroleRef);
-        }
-    }
-    return subrole;
-}
-
-#pragma mark textField
+#pragma mark -
 
 - (BOOL)isTextArea
 {
@@ -208,23 +185,7 @@
     return [self.subrole isEqualToString:NSAccessibilitySecureTextFieldSubrole];
 }
 
-- (NSString * _Nullable)stringValue
-{
-    NSString *result = nil;
-
-//    CFTypeRef rawValue = [self copyValueOfAttribute:NSAccessibilityValueAttribute];
-    CFTypeRef rawValue = [self copyValueOfAttribute:(NSString *)kAXValueAttribute];
-    if (NULL != rawValue)
-    {
-        if (CFGetTypeID(rawValue) == CFStringGetTypeID())
-        {
-            CFStringRef stringValueRef = (CFStringRef)rawValue;
-            result = (__bridge NSString *)(stringValueRef);
-        }
-        CFRelease(rawValue);
-    }
-    return result;
-}
+#pragma mark -
 
 - (NSRange)selectedTextRange
 {
@@ -310,6 +271,55 @@
 
     NSString *result = [stringValue substringWithRange:currentRange];
 
+    return result;
+}
+
+#pragma mark Private
+
+#pragma mark -
+
+- (NSString *)role
+{
+    if (nil == role)
+    {
+        CFStringRef roleRef = [self copyValueOfAttribute:NSAccessibilityRoleAttribute];
+        if (NULL != roleRef)
+        {
+            role = CFBridgingRelease(roleRef);
+        }
+    }
+    return role;
+}
+
+- (NSString *)subrole
+{
+    if (nil == subrole)
+    {
+        CFStringRef subroleRef = [self copyValueOfAttribute:NSAccessibilitySubroleAttribute];
+        if (NULL != subroleRef)
+        {
+            subrole = CFBridgingRelease(subroleRef);
+        }
+    }
+    return subrole;
+}
+
+#pragma mark -
+
+- (NSString * _Nullable)stringValue
+{
+    NSString *result = nil;
+
+    CFTypeRef rawValue = [self copyValueOfAttribute:(NSString *)kAXValueAttribute];
+    if (NULL != rawValue)
+    {
+        if (CFGetTypeID(rawValue) == CFStringGetTypeID())
+        {
+            CFStringRef stringValueRef = (CFStringRef)rawValue;
+            result = (__bridge NSString *)(stringValueRef);
+        }
+        CFRelease(rawValue);
+    }
     return result;
 }
 
