@@ -37,6 +37,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (readonly) NSRange selectedTextRange;
 
 @property (readonly, nullable) NSString *currentWordOrText;
+@property (readonly) NSRange currentWordOrTextRange;
 
 #pragma mark -
 

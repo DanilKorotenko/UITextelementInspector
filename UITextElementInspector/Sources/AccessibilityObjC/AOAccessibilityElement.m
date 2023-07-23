@@ -236,40 +236,55 @@
 
 // if selected text range length > 0, returns selected text
 // if selected text range length == 0, calculate current word
-- (NSString *)currentWordOrText
+- (NSRange)currentWordOrTextRange
 {
-    NSString *stringValue = self.stringValue;
     NSRange selectedRange = self.selectedTextRange;
 
-    if (nil == stringValue ||
-        selectedRange.location == NSNotFound)
+    if (selectedRange.location == NSNotFound)
     {
-        return nil;
+        return NSMakeRange(NSNotFound, NSNotFound);
     }
 
-    NSString *result = nil;
+    NSRange result = NSMakeRange(NSNotFound, NSNotFound);
 
     if (selectedRange.length != 0 && selectedRange.length != NSNotFound)
     {
-        result = [stringValue substringWithRange:selectedRange];
+        result = selectedRange;
     }
     else
     {
-        NSRange wordStart = [stringValue rangeOfCharacterFromSet:
-            [NSCharacterSet whitespaceAndNewlineCharacterSet]
+        NSMutableCharacterSet *wordBoundarySet = [NSMutableCharacterSet whitespaceAndNewlineCharacterSet];
+        [wordBoundarySet formUnionWithCharacterSet:[NSCharacterSet punctuationCharacterSet]];
+        [wordBoundarySet formUnionWithCharacterSet:[NSCharacterSet controlCharacterSet]];
+
+        NSRange wordStart = [stringValue rangeOfCharacterFromSet:wordBoundarySet
             options:NSBackwardsSearch range:NSMakeRange(0, selectedRange.location)];
 
-        NSRange wordEnd = [stringValue rangeOfCharacterFromSet:
-            [NSCharacterSet whitespaceAndNewlineCharacterSet]
+        NSRange wordEnd = [stringValue rangeOfCharacterFromSet:wordBoundarySet
             options:0
             range:NSMakeRange(selectedRange.location, stringValue.length - selectedRange.location)];
 
-        result = [stringValue substringWithRange:NSMakeRange(wordStart.location, wordEnd.location - wordStart.location)];
+        result = NSMakeRange(wordStart.location, wordEnd.location - wordStart.location);
     }
 
     return result;
 }
 
+- (NSString *)currentWordOrText
+{
+    NSString *stringValue = self.stringValue;
+
+    if (nil == stringValue)
+    {
+        return nil;
+    }
+
+    NSRange currentRange = self.currentWordOrTextRange;
+
+    NSString *result = [stringValue substringWithRange:currentRange];
+
+    return result;
+}
 
 #pragma mark -
 
