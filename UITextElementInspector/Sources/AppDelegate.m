@@ -71,8 +71,12 @@
     {
         NSMutableString *textToSet = [NSMutableString string];
 
-        [textToSet appendFormat:@"focused element current word: %@\n",
-            focusedElement.currentWordOrText];
+//        [textToSet appendFormat:@"word on cursor: %@\n",
+//            focusedElement.currentWordOrText];
+        NSRange selectedRange = focusedElement.selectedTextRange;
+        [textToSet appendFormat:@"cursor location: %lu\n",
+            (unsigned long)selectedRange.location];
+
 
         self.textField.stringValue = textToSet;
     }

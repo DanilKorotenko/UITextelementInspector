@@ -34,6 +34,8 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark -
 
 @property (readonly) NSRange currentWordOrTextRange;
+@property (readonly) NSRange selectedTextRange;
+
 @property (readonly, nullable) NSString *currentWordOrText;
 @property (readonly) BOOL isPossibleToSetCurrentWordOrText;
 
